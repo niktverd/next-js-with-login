@@ -1,9 +1,10 @@
 import * as jose from 'jose';
-import {NextResponse} from 'next/server';
 import type {NextRequest} from 'next/server';
+import {NextResponse} from 'next/server';
 
 const secret = process.env.NEXT_PUBLIC_SECRET;
 
+// eslint-disable-next-line no-implicit-globals
 export default async function middleware(req: NextRequest) {
     const {cookies, nextUrl} = req;
     const jwt = cookies.get('affilERP');
