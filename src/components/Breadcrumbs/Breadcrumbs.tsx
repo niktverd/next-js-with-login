@@ -1,4 +1,7 @@
-import type { NextPage } from 'next';
+import React from 'react';
+
+import type {NextPage} from 'next';
+
 import styles from './Breadcrumbs.module.css';
 
 type BreadcrumbsProps = {
@@ -8,9 +11,7 @@ type BreadcrumbsProps = {
     }[];
 };
 
-export const Breadcrumbs: NextPage<BreadcrumbsProps> = ({
-    breadcrumbs,
-}: BreadcrumbsProps) => {
+export const Breadcrumbs: NextPage<BreadcrumbsProps> = ({breadcrumbs}: BreadcrumbsProps) => {
     return (
         <div className={styles.container}>
             {breadcrumbs.map((bc) => {

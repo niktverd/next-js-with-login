@@ -1,7 +1,7 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import {addDoc, collection} from 'firebase/firestore/lite';
+import type {NextApiRequest, NextApiResponse} from 'next';
 
 import db from '../../../configs/firebase';
-import { addDoc, collection } from 'firebase/firestore/lite';
 
 type DataBase = {
     ok: boolean;
@@ -10,25 +10,26 @@ type DataBase = {
 
 async function createTask(
     req: NextApiRequest,
-    res: NextApiResponse<DataBase & { data: { id: string } }>
+    res: NextApiResponse<DataBase & {data: {id: string}}>,
 ) {
-    const { body } = req;
+    const {body} = req;
     const tasksCol = collection(db, 'tasks');
-    console.log(body);
+    // console.log(body);
     const document = await addDoc(tasksCol, body);
-    console.log(document.id);
+    // console.log(document.id);
     res.status(200).json({
         ok: true,
         msg: 'Task was created',
-        data: { id: document.id },
+        data: {id: document.id},
     });
 }
 
-export default function handler(
-    req: NextApiRequest,
-    res: NextApiResponse<DataBase>
-) {
-    req.method === 'POST'
-        ? createTask(req, res)
-        : res.status(404).json({ ok: false });
+export default function handler(req: NextApiRequest, res: NextApiResponse<DataBase>) {
+    if (req.method === 'POST') {
+        createTask(req, res);
+        return;
+    }
+
+    res.status(404).json({ok: false});
+    return;
 }

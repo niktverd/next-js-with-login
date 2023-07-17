@@ -1,10 +1,9 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-// import { Secret, sign } from 'jsonwebtoken';
+import {serialize} from 'cookie';
+import {collection, doc, getDoc} from 'firebase/firestore/lite';
 import * as jose from 'jose';
-import { serialize } from 'cookie';
+import type {NextApiRequest, NextApiResponse} from 'next';
 
 import db from '../../../configs/firebase';
-import { getDoc, collection, doc } from 'firebase/firestore/lite';
 
 type DataBase = {
     ok: boolean;
@@ -15,19 +14,17 @@ const maxAge = 60 * 60 * 12;
 
 const secret = process.env.NEXT_PUBLIC_SECRET;
 
-async function login(
+async function loginProcess(
     req: NextApiRequest,
-    res: NextApiResponse<
-        DataBase & { data?: { login: string; password: string } }
-    >
+    res: NextApiResponse<DataBase & {data?: {login: string; password: string}}>,
 ) {
-    const { login, password } = req.body;
+    const {login, password} = req.body;
 
     if (!login || !password) {
         return res.status(400).json({
             ok: false,
             msg: 'Provide both login and password',
-            data: { login, password },
+            data: {login, password},
         });
     }
 
@@ -39,7 +36,7 @@ async function login(
         return res.status(404).json({
             ok: false,
             msg: 'User not found or password not match',
-            data: { login, password },
+            data: {login, password},
         });
     }
 
@@ -49,21 +46,18 @@ async function login(
         return res.status(404).json({
             ok: false,
             msg: 'User not found or password not match',
-            data: { login, password },
+            data: {login, password},
         });
     }
-
-    console.log('token - before');
 
     const token = await new jose.SignJWT({
         _id: user.login,
         login: user.login,
     })
-        .setProtectedHeader({ alg: 'HS256' })
+        .setProtectedHeader({alg: 'HS256'})
         .setIssuedAt()
         .setExpirationTime('12h')
         .sign(new TextEncoder().encode(secret));
-    console.log('token - after', token);
 
     const serialized = serialize('affilERP', token, {
         httpOnly: true,
@@ -74,7 +68,6 @@ async function login(
     });
 
     res.setHeader('Set-Cookie', serialized);
-    console.log('return - before');
 
     return res.status(200).json({
         ok: true,
@@ -82,11 +75,12 @@ async function login(
     });
 }
 
-export default function handler(
-    req: NextApiRequest,
-    res: NextApiResponse<DataBase>
-) {
-    req.method === 'POST'
-        ? login(req, res)
-        : res.status(404).json({ ok: false });
+export default function handler(req: NextApiRequest, res: NextApiResponse<DataBase>) {
+    if (req.method === 'POST') {
+        loginProcess(req, res);
+        return;
+    }
+
+    res.status(404).json({ok: false});
+    return;
 }

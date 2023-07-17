@@ -1,9 +1,0 @@
-{
-    "extends": ["stylelint-config-standard", "stylelint-order-config-standard"],
-    "parser": "@typescript-eslint/parser",
-    "plugins": ["stylelint-order"],
-    "rules": {
-        "color-hex-case": "upper",
-        "indentation": 4
-    }
-}

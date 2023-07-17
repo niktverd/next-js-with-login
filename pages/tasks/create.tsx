@@ -1,8 +1,10 @@
-import type { NextPage } from 'next';
-import { ChangeEvent, useState } from 'react';
-import { Breadcrumbs } from '../../src/components/Breadcrumbs/Breadcrumbs';
-import { Field } from '../../src/components/Field/Field';
-import { Page } from '../../src/containers/Page/Page';
+import React from 'react';
+
+import type {NextPage} from 'next';
+
+import {Breadcrumbs} from '../../src/components/Breadcrumbs/Breadcrumbs';
+import {Field} from '../../src/components/Field/Field';
+import {Page} from '../../src/containers/Page/Page';
 
 // import styles from 'styles/Home.module.css';
 
@@ -14,13 +16,13 @@ const breadcrumbs = [
 ];
 
 const CreateTask: NextPage = () => {
-    const [form, setForm] = useState({
+    const [form, setForm] = React.useState({
         title: '',
         description: '',
     });
 
     const handleCreate = async () => {
-        const response = await fetch('/api/tasks', {
+        await fetch('/api/tasks', {
             method: 'POST',
             body: JSON.stringify({
                 title: form.title,
@@ -30,16 +32,12 @@ const CreateTask: NextPage = () => {
                 'Content-Type': 'application/json',
             },
         });
-
-        const data = await response.json();
-
-        console.log(data);
     };
 
-    const handleTextInput = (event: ChangeEvent<HTMLInputElement>) => {
-        console.log(event);
-        const { name, value } = event.target;
-        setForm({ ...form, [name]: value });
+    const handleTextInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+        // console.log(event);
+        const {name, value} = event.target;
+        setForm({...form, [name]: value});
     };
 
     return (
@@ -48,22 +46,12 @@ const CreateTask: NextPage = () => {
             <h1>Create new task</h1>
             <Field
                 label="Title"
-                field={
-                    <input
-                        name="title"
-                        value={form.title}
-                        onChange={handleTextInput}
-                    />
-                }
+                field={<input name="title" value={form.title} onChange={handleTextInput} />}
             />
             <Field
                 label="Description"
                 field={
-                    <input
-                        name="description"
-                        value={form.description}
-                        onChange={handleTextInput}
-                    />
+                    <input name="description" value={form.description} onChange={handleTextInput} />
                 }
             />
             <button onClick={handleCreate}>Create</button>

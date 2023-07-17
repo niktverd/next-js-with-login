@@ -1,28 +1,30 @@
-import type { NextPage } from 'next';
-import { useRouter } from 'next/router';
-import { ChangeEvent, FormEvent, useState } from 'react';
-import { Field } from 'src/components/Field/Field';
-import { Page } from 'src/containers/Page/Page';
+import React from 'react';
+
+import type {NextPage} from 'next';
+import {useRouter} from 'next/router';
+
+import {Field} from '../../src/components/Field/Field';
+import {Page} from '../../src/containers/Page/Page';
 
 // import styles from '../styles/Home.module.css';
 
 const Home: NextPage = () => {
-    const [form, setForm] = useState({
+    const [form, setForm] = React.useState({
         login: 'craffil',
         password: 'DdVp8t1pSU',
     });
 
-    const [error, setError] = useState<string | unknown>(null);
+    const [error, setError] = React.useState<string | unknown>(null);
     const router = useRouter();
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
     };
 
-    const handleTextInput = (event: ChangeEvent<HTMLInputElement>) => {
-        console.log(event);
-        const { name, value } = event.target;
-        setForm({ ...form, [name]: value });
+    const handleTextInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+        // console.log(event);
+        const {name, value} = event.target;
+        setForm({...form, [name]: value});
     };
 
     const handleLogin = async () => {
@@ -49,17 +51,11 @@ const Home: NextPage = () => {
 
     return (
         <Page hideNavigation>
-            <>
+            <React.Fragment>
                 <form onSubmit={handleSubmit}>
                     <Field
                         label="login"
-                        field={
-                            <input
-                                name="login"
-                                value={form.login}
-                                onChange={handleTextInput}
-                            />
-                        }
+                        field={<input name="login" value={form.login} onChange={handleTextInput} />}
                     />
                     <Field
                         label="password"
@@ -74,7 +70,7 @@ const Home: NextPage = () => {
                     <button onClick={handleLogin}>Login</button>
                 </form>
                 {error && <pre>{JSON.stringify(error, null, 5)}</pre>}
-            </>
+            </React.Fragment>
         </Page>
     );
 };

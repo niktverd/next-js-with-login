@@ -1,11 +1,11 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
 import * as jose from 'jose';
+import {NextResponse} from 'next/server';
+import type {NextRequest} from 'next/server';
 
 const secret = process.env.NEXT_PUBLIC_SECRET;
 
 export default async function middleware(req: NextRequest) {
-    const { cookies, nextUrl } = req;
+    const {cookies, nextUrl} = req;
     const jwt = cookies.get('affilERP');
 
     const loginUrl = nextUrl.clone();
@@ -17,10 +17,7 @@ export default async function middleware(req: NextRequest) {
         }
 
         try {
-            const { payload: jwtData } = await jose.jwtVerify(
-                jwt,
-                new TextEncoder().encode(secret)
-            );
+            const {payload: jwtData} = await jose.jwtVerify(jwt, new TextEncoder().encode(secret));
 
             if (jwtData) {
                 return NextResponse.next();
